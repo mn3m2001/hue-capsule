@@ -31,6 +31,9 @@ Less manual work
 Mixed Arabic/English layout
 - `style.bidi_fix` isolates every English run inside Arabic text as a chip; the capsule explanation box now sits directly under the Given.
 
+Explanation review
+- `scripts/review_explanations.py`: a second model family reviews every problem's explanation against its solution and answers (technical errors, misleading claims, unsupported claims, contradictions) and writes `_audit/explanation_review.json`; it never rewrites. Stage 10 of the pipeline.
+
 Explanation boxes
 - Every solved problem gets a "Capsule explanation" box (own explanation + laws used) and every requirement a "How to solve it" line; both languages; enforced by the build and by tests. The language-rule lint now matches whole Arabic words.
 

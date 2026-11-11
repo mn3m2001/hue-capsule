@@ -333,6 +333,17 @@ def tool_tests(tmp):
         res.append(("build_master: capsule explanation box (insight) under every problem, with the laws used", "شرح الكبسولة للمسألة" in mt and "القوانين المستخدمة" in mt and "قانون اوم" in mt, ""))
         edit_json(lp, lambda d: d["modules"][0]["problems"][0].pop("insight_ar"))
         code, out = sh("build_master.py", c)
+        sys.path.insert(0, S)
+        import review_explanations as _rv
+        _led = {"modules": [{"problems": [{"id": "P1", "title": "t", "explain_en": "e", "steps_en": ["s"], "parts": [{"ask_en": "a", "answer_tex": "x", "how_en": "h"}], "insight_laws": [{"note_en": "n"}]}]}]}
+        _rep = _rv.review(_led, lambda pr, pl, md: '{"verdict": "issues", "issues": [{"where": "s", "problem": "wrong", "suggestion": "fix"}]}', "stub")
+        _ok = _rv.review(_led, lambda pr, pl, md: '```json' + chr(10) + '{"verdict": "ok", "issues": []}' + chr(10) + '```', "stub")
+        _bad = _rv.review(_led, lambda pr, pl, md: "not json", "stub")
+        res.append(("review_explanations: issues are recorded, ok passes, a non-JSON reply is an error (never silently ok)",
+                    _rep["problems"]["P1"]["verdict"] == "issues" and _ok["problems"]["P1"]["verdict"] == "ok" and _bad["problems"]["P1"]["verdict"] == "error"
+                    and "explanation" in _rv.build_payload(_led["modules"][0]["problems"][0]), ""))
+        r_ = subprocess.run([sys.executable, os.path.join(S, "review_explanations.py")], capture_output=True, text=True, encoding="utf-8", errors="replace")
+        res.append(("review_explanations: usage error without a course", r_.returncode == 2, "exit %s" % r_.returncode))
         res.append(("bidi: English runs inside Arabic text are isolated, math untouched, insight box sits under the Given",
                     '<span class="ltr">' in mt and mt.find("المعطيات") < mt.find("شرح الكبسولة للمسألة") < mt.find("المطلوب <span"), ""))
         res.append(("build_master: how-to-solve line under every requirement", "طريقة حل المطلوب" in mt and "نطبق القانون" in mt, ""))
