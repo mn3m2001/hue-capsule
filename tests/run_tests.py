@@ -333,10 +333,12 @@ def tool_tests(tmp):
         res.append(("build_master: capsule explanation box (insight) under every problem, with the laws used", "شرح الكبسولة للمسألة" in mt and "القوانين المستخدمة" in mt and "قانون اوم" in mt, ""))
         edit_json(lp, lambda d: d["modules"][0]["problems"][0].pop("insight_ar"))
         code, out = sh("build_master.py", c)
+        res.append(("bidi: English runs inside Arabic text are isolated, math untouched, insight box sits under the Given",
+                    '<span class="ltr">' in mt and mt.find("المعطيات") < mt.find("شرح الكبسولة للمسألة") < mt.find("المطلوب <span"), ""))
         res.append(("build_master: how-to-solve line under every requirement", "طريقة حل المطلوب" in mt and "نطبق القانون" in mt, ""))
         res.append(("build_master: missing insight_ar -> fails", code == 1 and "insight_ar" in out, "exit %s" % code))
         edit_json(lp, full)
-        res.append(("build_master: every problem shows its explanation box and per-step Arabic lines under the solution", "فهم المسألة قبل الحل" in mt and '<div class="ar">' in mt and "(Answer)" in mt, ""))
+        res.append(("build_master: every problem shows its explanation box and per-step Arabic lines under the solution", "فهم المسألة قبل الحل" in mt and '<div class="ar">' in mt and "الإجابة" in mt, ""))
         code, out = sh("build_master.py", c, "--lang", "en")
         res.append(("build_master --lang en: missing explain_en -> fails", code == 1 and "explain_en" in out, "exit %s" % code))
         edit_json(lp, lambda d: d["modules"][0]["problems"][0].update({"explain_en": "What is asked and which law", "insight_en": ["the idea", "the method", "the trap"], "steps_en": ["first step", "second step"], "mistakes_en": ["a common slip"]}))

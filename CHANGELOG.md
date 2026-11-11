@@ -28,6 +28,9 @@ Language rule
 Less manual work
 - `scripts/verify_kit.py`: SymPy kit; each `calc` is verified AND becomes a LaTeX line (symbolic formula, numbers, value), so the check and the printed equation come from one source; `--merge` fills `solution_tex` in the ledger.
 - `scripts/draft_ledger.py`: drafts ledger problems from a text PDF (split by Q number, source_ref, crop_start/crop_end, givens_tex, asks); Arabic/English explanations, steps and answers stay yours.
+Mixed Arabic/English layout
+- `style.bidi_fix` isolates every English run inside Arabic text as a chip; the capsule explanation box now sits directly under the Given.
+
 Explanation boxes
 - Every solved problem gets a "Capsule explanation" box (own explanation + laws used) and every requirement a "How to solve it" line; both languages; enforced by the build and by tests. The language-rule lint now matches whole Arabic words.
 

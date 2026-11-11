@@ -32,7 +32,7 @@ body{font-family:'Segoe UI','Cairo',Tahoma,Arial,sans-serif;direction:rtl;line-h
 .warn{background:#fff0ee;border:1px solid #e3a69d;border-radius:4px;padding:4px 10px;margin:5px 0;direction:ltr;text-align:left;font-size:12px}
 .q{font-size:12px;color:#33454a;margin:3px 0}.q .t{direction:ltr;unicode-bidi:isolate;font-family:Consolas,monospace;font-size:11px;color:#0b4f52}
 .formula{direction:ltr;text-align:left;font-family:Cambria,'Times New Roman',serif;background:#f4f7fb;border:1px solid #d5dde2;border-radius:4px;padding:4px 10px;margin:4px 0}
-.how{background:#eef3fb;border-right:3px solid #7a96c9;border-radius:4px;padding:3px 8px;margin:3px 0 5px;font-size:12px}.insight{background:#f3effb;border:1px solid #b9a8e0;border-radius:6px;padding:6px 12px;margin:8px 0}.insight ul{margin:4px 0;padding-right:18px}.law{border-top:1px dashed #cdbfe9;padding:3px 0}.law .ar{direction:rtl;text-align:right;font-size:12px;color:#33454a}.ltr{direction:ltr;unicode-bidi:isolate}.given{background:#eef6ee;border:1px solid #b7d7b7;border-radius:6px;padding:4px 10px;margin:6px 0}.part{border:1px solid #cfd8dc;border-radius:6px;margin:8px 0;padding:4px 10px;background:#fff}.ask{background:#e6f1f2;border-radius:4px;padding:3px 8px;margin:2px 0 4px;font-weight:bold}.ans{background:#fff4d6;border:1px solid #f0c36d;border-radius:4px;padding:3px 10px;margin:4px 0;font-weight:bold}.ans .tex{display:inline-block;margin:0 8px}.step{border-bottom:1px dashed #cfd8dc;padding:3px 0}.step .ar{direction:rtl;text-align:right;font-family:"Segoe UI",Tahoma,sans-serif;font-size:12px;color:#33454a;margin:0 0 4px}.tex{direction:ltr;text-align:left;margin:2px 0;font-size:.86em}.tex .katex-display{margin:3px 0;text-align:left}.tex .katex-display>.katex{text-align:left}
+.how{background:#eef3fb;border-right:3px solid #7a96c9;border-radius:4px;padding:3px 8px;margin:3px 0 5px;font-size:12px}.insight{background:#f3effb;border:1px solid #b9a8e0;border-radius:6px;padding:6px 12px;margin:8px 0}.insight ul{margin:4px 0;padding-right:18px}.law{border-top:1px dashed #cdbfe9;padding:3px 0}.law .ar{direction:rtl;text-align:right;font-size:12px;color:#33454a}.ltr{direction:ltr;unicode-bidi:isolate;display:inline-block;background:#eef1f4;border-radius:4px;padding:0 4px;margin:0 2px;font-size:.95em}.tex .ltr,.ask .ltr,.hdr .ltr{background:none;padding:0}.given{background:#eef6ee;border:1px solid #b7d7b7;border-radius:6px;padding:4px 10px;margin:6px 0}.part{border:1px solid #cfd8dc;border-radius:6px;margin:8px 0;padding:4px 10px;background:#fff}.ask{background:#e6f1f2;border-radius:4px;padding:3px 8px;margin:2px 0 4px;font-weight:bold}.ans{background:#fff4d6;border:1px solid #f0c36d;border-radius:4px;padding:3px 10px;margin:4px 0;font-weight:bold}.ans .tex{display:inline-block;margin:0 8px}.step{border-bottom:1px dashed #cfd8dc;padding:3px 0}.step .ar{direction:rtl;text-align:right;font-family:"Segoe UI",Tahoma,sans-serif;font-size:12px;color:#33454a;margin:0 0 4px}.tex{direction:ltr;text-align:left;margin:2px 0;font-size:.86em}.tex .katex-display{margin:3px 0;text-align:left}.tex .katex-display>.katex{text-align:left}
 table{border-collapse:collapse;width:100%}td,th{border:1px solid #cfd8dc;padding:4px 7px;vertical-align:top;font-size:12px}th{background:#e6f1f2}
 .pb{break-before:page}
 </style>"""
@@ -66,6 +66,32 @@ def copy_katex(out_dir):
     if os.path.isdir(dst):
         shutil.rmtree(dst)
     shutil.copytree(os.path.join(HERE, "..", "assets", "katex"), dst)
+
+
+_LAT = re.compile(r"\([^()؀-ۿ]*[A-Za-z0-9][^()؀-ۿ]*\)|\[[^\[\]؀-ۿ]*[A-Za-z0-9][^\[\]؀-ۿ]*\]|[A-Za-z0-9](?:[A-Za-z0-9_\-+*/=<>^.,:;%°'’×· ]*[A-Za-z0-9%°])?")
+
+
+def bidi_fix(html_text):
+    """Mixed Arabic/English: wrap every run of Latin text/numbers inside the Arabic text in <span class=ltr> (direction:ltr; unicode-bidi:isolate),
+    so the browser lays out each English term as one left-to-right block inside the right-to-left sentence instead of shuffling them.
+    Math (.tex), <script>, <style>, <title> and tag attributes are not touched. Chromium already implements the Unicode bidi algorithm,
+    so no extra bidi library is needed (python-bidi/arabic-reshaper are for engines that do not, and would reorder twice here)."""
+    out, skip_until = [], None
+    for tok in re.split(r"(<[^>]+>)", html_text):
+        if tok.startswith("<"):
+            out.append(tok)
+            m = re.match(r"<\s*(/?)([a-zA-Z0-9]+)([^>]*)>", tok)
+            if m and not m.group(1) and skip_until is None:
+                if m.group(2).lower() in ("script", "style", "title") or re.search(r'class="(?:[^"]* )?tex(?: [^"]*)?"', m.group(3)):
+                    skip_until = m.group(2).lower()
+            elif m and m.group(1) and skip_until == m.group(2).lower():
+                skip_until = None
+            continue
+        if skip_until or not re.search(r"[؀-ۿ]", tok):
+            out.append(tok)  # no Arabic in this text node: nothing to isolate
+        else:
+            out.append(_LAT.sub(lambda mm: '<span class="ltr">%s</span>' % mm.group(0), tok))
+    return "".join(out)
 
 
 def document(title, body):
@@ -144,6 +170,7 @@ def solution_html(p, lang, explain, errors):
         errors.append("%s: no solution_tex in the ledger" % pid)
     covered = []
     h = '<div class="given"><b>المعطيات (Given):</b>%s</div>' % "".join('<div class="tex">%s</div>' % e(g) for g in giv)
+    h += insight_html(p, lang, errors)  # the capsule's explanation sits right under the Given
     letters = len(parts) > 1
     for k, part in enumerate(parts):
         a, b = part["steps"]
@@ -164,7 +191,6 @@ def solution_html(p, lang, explain, errors):
               % ((" (%d)" % (k + 1)) if letters else "", e(ask or ""), steps, e(part.get("answer_tex", ""))))
     if tex and sorted(covered) != list(range(len(tex))):
         errors.append("%s: parts must cover every solution_tex line exactly once (covered %s of %d lines)" % (pid, sorted(covered), len(tex)))
-    h += insight_html(p, lang, errors)
     return h
 
 

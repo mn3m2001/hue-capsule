@@ -30,7 +30,7 @@ sys.path.insert(0, HERE)
 import build_capsule as bc  # noqa: E402
 
 e = html.escape
-from style import (CSS, KATEX, TYPE_AR, TYPE_ORDER, SPK_AR, TIER_AR, mmss, quote_row as _qr, copy_katex, to_en, langs_of, solution_html, where_spans, lint_terms, fname as st_fname)  # noqa: E402
+from style import (CSS, KATEX, TYPE_AR, TYPE_ORDER, SPK_AR, TIER_AR, mmss, quote_row as _qr, copy_katex, to_en, langs_of, solution_html, where_spans, lint_terms, fname as st_fname, bidi_fix)  # noqa: E402
 
 
 def main(argv):
@@ -189,7 +189,7 @@ def main(argv):
     hp = os.path.join(out, mname + ".html")
     doc_html = "<!doctype html><html lang=ar dir=rtl><meta charset=utf-8><title>%s Master</title>%s%s<body>%s</body></html>" % (e(code), KATEX, CSS, body)
     with open(hp, "w", encoding="utf-8") as f:
-        f.write(to_en(doc_html) if lang == "en" else doc_html)
+        f.write(to_en(doc_html) if lang == "en" else bidi_fix(doc_html))
     mine = ("build/" + mname + ".html", "build/" + mname + ".pdf")
     delivs = [d for d in cfg.get("deliverables", []) if d not in mine] + [mine[0]]
     br = bc.find_browser()

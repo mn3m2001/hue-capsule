@@ -291,7 +291,7 @@ def main(argv):
     st.copy_katex(out)
     for fn, content in files.items():
         with open(os.path.join(out, fn), "w", encoding="utf-8") as f:
-            f.write(content)
+            f.write(content if fn.endswith("_EN.html") else st.bidi_fix(content))
     delivs = ["build/" + fn for fn in files]
     if "--pdf" in argv:
         br = find_browser()
