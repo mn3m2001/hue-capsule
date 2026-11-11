@@ -119,7 +119,7 @@ EN = {
  "القسم الثاني: المسائل مرتبة بالأولوية (الحل + صورة الصفحة الأصلية)": "Part 2: Problems ranked by priority (solution + original page image)",
  "القسم الثالث: القوانين": "Part 3: Formulas", "القسم الرابع: النظرية والفخاخ": "Part 4: Theory and traps",
  "القسم الخامس: ورقة تدريب (الأسئلة بس — الحلول في القسم الثاني)": "Part 5: Practice paper (questions only — solutions are in Part 2)",
- "فهم المسألة قبل الحل (Understand first):": "Understand the problem first:", "شرح الكبسولة للمسألة (Capsule explanation):": "Capsule explanation of the problem:", "من فهمنا للمادة وليس من كلام الدكتور": "from our understanding of the subject, not from what the doctor said", "القوانين المستخدمة (Laws used):": "Laws used:", "طريقة حل المطلوب (How to solve it):": "How to solve it:", "المصدر:": "Source:", "اللي اتقال عنها:": "What was said about it:",
+ "فهم المسألة قبل الحل (Understand first):": "Understand the problem first:", "شرح الكبسولة للمسألة (Capsule explanation):": "Capsule explanation of the problem:", "القوانين المستخدمة (Laws used):": "Laws used:", "طريقة حل المطلوب (How to solve it):": "How to solve it:", "المصدر:": "Source:", "اللي اتقال عنها:": "What was said about it:",
  "مفيش تسجيل مرتبط بالمسألة دي.": "No recording is linked to this problem.",
  "ثقة تقديرية": "est. confidence", "اتحسب تاني ✔": "recomputed ✔",
  "🛑 مش داخل في الامتحان": "🛑 Not in the exam", "🎯 وعد / شرط من الدكتور": "🎯 Promise / condition", "⚡ تشديد": "⚡ Emphasis",
@@ -205,7 +205,7 @@ def insight_html(p, lang, errors):
         errors.append("%s: insight_%s needs at least 3 lines (the capsule's own explanation of the problem)" % (pid, lang))
     if not laws:
         errors.append("%s: insight_laws is empty (list of {tex, note_ar, note_en}: the laws used in this problem)" % pid)
-    h = '<div class="box insight"><b>شرح الكبسولة للمسألة (Capsule explanation):</b> <i>من فهمنا للمادة وليس من كلام الدكتور</i><ul>'
+    h = '<div class="box insight"><b>شرح الكبسولة للمسألة (Capsule explanation):</b><ul>'
     h += "".join("<li>%s</li>" % e(x) for x in lines) + "</ul>"
     if laws:
         h += '<div class="laws"><b>القوانين المستخدمة (Laws used):</b>'
