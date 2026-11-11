@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+build/
+_audio/
+_extracted/
+_crops/
+_audit/
+_verify/
+*.mp3
+*.mp4
+.env

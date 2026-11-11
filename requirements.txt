@@ -1,0 +1,5 @@
+# Python packages used by the scripts (install with: python scripts/setup.py --install)
+pymupdf>=1.24      # PDF text, page images, crops, page numbers
+scipy>=1.11        # Bessel functions for circular-fin checks and numeric solving
+sympy>=1.12        # symbolic checks of every number
+numpy>=1.26

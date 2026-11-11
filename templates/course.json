@@ -1,0 +1,20 @@
+{
+  "course_code": "ECE321",
+  "course_name": "Electronic Circuits",
+  "instructor": "Dr. Example",
+  "exam": {"type": "Midterm", "date": "2026-11-12", "time": "11:15 - 12:15", "hall": "E421"},
+  "root": "C:/path/to/the/course/folder",
+  "glossary": "glossary.txt",
+  "media": [
+    {"video": "Sections/Section 1/EC - Section -1 .mp4", "audio": "_audio/EC_Section_1.mp3", "transcript": "_audio/EC_Section_1_transcript.txt"},
+    {"video": "Sections/Section 2/EC - Section -2 .mp4", "audio": "_audio/EC_Section_2.mp3", "transcript": "_audio/EC_Section_2_transcript.txt"},
+    {"video": "Sections/Section 3/EC - Section -3 .mp4", "audio": "_audio/EC_Section_3.mp3", "transcript": "_audio/EC_Section_3_transcript.txt"}
+  ],
+  "deliverables": [
+    "Hue_Capsule_Electronic_Circuits_ECE321.pdf",
+    "ECE321_Doctor_Priority_Problem_Bank.pdf",
+    "ECE321_Complete_Formula_Compendium.pdf",
+    "ECE321_Essential_Theory_Guide.pdf"
+  ],
+  "thresholds": {}
+}

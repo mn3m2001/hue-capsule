@@ -1,0 +1,15 @@
+{
+  "_comment": "Weights for exam-prediction score. Edit here, never inside a run. Tiers: confirmed >= 8, likely >= 5, else possible.",
+  "weights": {
+    "promise": 5.0,
+    "emphasis": 3.0,
+    "solved_in_class": 3.0,
+    "trap": 1.5,
+    "exclusion": -10.0,
+    "ta_speaker_factor": 0.6,
+    "recurrence_per_extra_source": 1.0,
+    "recurrence_cap": 3.0,
+    "in_question_bank": 2.0
+  },
+  "tiers": {"confirmed": 8.0, "likely": 5.0}
+}
